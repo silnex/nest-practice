@@ -6,6 +6,8 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CreateUserProfileDto } from '../dtos/create-user-profile.dto';
 import { Profile } from '../../entities/Profile.entity';
+import { CreateUserPostDto } from '../dtos/create-user-post.dto';
+import { Post } from '../../entities/Post.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,10 +15,12 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+    @InjectRepository(Post)
+    private readonly postRepository: Repository<Post>,
   ) {}
 
   findUsers() {
-    return this.userRepository.find({ relations: ['profile'] });
+    return this.userRepository.find({ relations: ['profile', 'posts'] });
   }
 
   createUser(createUserDto: CreateUserDto) {
@@ -50,5 +54,18 @@ export class UsersService {
     user.profile = saveProfile;
 
     return this.userRepository.save(user);
+  }
+
+  async createUserPost(id: number, createUserPostDto: CreateUserPostDto) {
+    const user = await this.userRepository.findOneBy({ id: id });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    const newPost = this.postRepository.create({
+      ...createUserPostDto,
+      user,
+    });
+    return await this.postRepository.save(newPost);
   }
 }
