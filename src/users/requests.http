@@ -6,7 +6,7 @@ Content-Type: application/json
     "email": "test2@test.com",
     "password": "password"
 }
-### Login a new user
+### Signin user
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
