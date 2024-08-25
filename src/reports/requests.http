@@ -11,3 +11,14 @@ Content-Type: application/json
     "lat": 0,
     "price": 50000
 }
+
+### Approve an existing report
+PATCH http://localhost:3000/reports/7
+Content-Type: application/json
+
+{
+    "approved": true
+}
+
+### Get an estmate for an exisiting vehicle
+GET http://localhost:3000/reports?make=toyota&model=corolla&lng=0&lat=0&mileage=10000&year=1980
